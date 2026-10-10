@@ -48,7 +48,8 @@ header p{margin:6px 0 0;color:var(--muted);max-width:60ch}
 
 /* плеєр */
 .deck{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 6px 18px -14px rgba(0,0,0,.45)}
-.now{padding:14px 16px 10px;display:flex;flex-direction:column;gap:4px;min-height:150px}
+.now{padding:14px 16px 10px;display:flex;flex-direction:column;gap:4px;min-height:190px}
+.phases{margin-top:auto!important;padding-top:8px}
 .meta{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12.5px;letter-spacing:.02em}
 .meta b{font-weight:600;color:var(--ink)}
 .meta span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -103,7 +104,7 @@ select{font:inherit;color:inherit;background:var(--surface);border:1px solid var
 
 /* доріжка */
 .list h2{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
-ol{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+ol{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);position:relative;max-height:max(220px,calc(100vh - 470px));overflow-y:auto;overscroll-behavior:contain}
 ol li+li{border-top:1px solid var(--line)}
 ol button{width:100%;text-align:left;border:0;background:transparent;padding:9px 12px;display:grid;grid-template-columns:28px minmax(0,1fr);gap:2px 8px;align-items:baseline}
 ol .n{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;grid-row:span 2}
@@ -123,7 +124,8 @@ ol li[aria-current="true"] .n{color:var(--live);font-weight:700}
   .opt{flex-direction:column;align-items:stretch;gap:5px}
   .seg{display:flex}
   .seg button{flex:1 1 auto;padding:9px 8px;min-height:40px}
-  .now{min-height:0;padding:10px 12px 8px}
+  .now{min-height:170px;padding:10px 12px 8px}
+  ol{max-height:max(200px,calc(100vh - 440px))}
   .it{margin-top:2px}
   .uk{font-size:16px}
   .phases{gap:4px;margin-top:6px}
@@ -1496,7 +1498,7 @@ function pickVoices(){
   else if (voicesKnown && !ukVoice) note.textContent = "Українського голосу на цьому пристрої немає, тому переклад з'являється на екрані без озвучення.";
   else note.textContent = "";
   if (hasPack()) { note.className = "note"; note.textContent = "Ця тема має записаний звук: італійська й переклад звучать однаково на будь-якому пристрої."; }
-  $("voiceSum").textContent = itVoice ? "· голос " + itVoice.name.replace(/\s*\(.*$/, "") : "";
+  $("voiceSum").textContent = hasPack() ? "" : itVoice ? "· голос " + itVoice.name.replace(/\s*\(.*$/, "") : "";
   if (!playing) show();
 }
 
@@ -1590,7 +1592,7 @@ function show(){
   document.querySelectorAll("#list li").forEach((li, i) => {
     const cur = i === S.track;
     if (cur) li.setAttribute("aria-current", "true"); else li.removeAttribute("aria-current");
-    if (cur && playing) { const box = li.getBoundingClientRect(); if (box.top < 0 || box.bottom > innerHeight) li.scrollIntoView({ block:"center" }); }
+    if (cur) { const ol = li.parentNode; if (li.offsetTop < ol.scrollTop || li.offsetTop + li.offsetHeight > ol.scrollTop + ol.clientHeight) ol.scrollTop = Math.max(0, li.offsetTop - ol.clientHeight / 2 + li.offsetHeight / 2); }
   });
   paint();
 }
