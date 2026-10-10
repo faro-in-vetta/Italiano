@@ -1,0 +1,1633 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Італійська на слух</title>
+<meta name="description" content="Аудіотренажер італійської для україномовних: 31 тема, слова й фрази звучать італійською з перекладом і паузою на повтор.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0e6a49">
+<meta property="og:title" content="Італійська на слух">
+<meta property="og:description" content="Аудіотренажер італійської: слухай, повторюй уголос, запам'ятовуй. 31 тема, майже 1000 слів і фраз.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230e6a49'/%3E%3Cpath d='M25 18v28l22-14z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Piazzolla:ital,opsz,wght@0,8..30,500;0,8..30,700;1,8..30,500&display=swap">
+<style>
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+/* Одна колонка: зверху липкий плеєр із поточним словом, під ним теми, далі доріжка теми. */
+:root{
+  --bg:#f2f5f0; --surface:#ffffff; --ink:#16211b; --muted:#5c6b62; --line:#d6ded6;
+  --accent:#0e6a49; --accent-ink:#ffffff; --live:#c0352d; --soft:#e2ebe4;
+  --display:"Piazzolla","Georgia","Times New Roman",serif;
+  --ui:"Onest","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1411; --surface:#161f1a; --ink:#e8efe9; --muted:#93a39a; --line:#28342e;
+    --accent:#52c495; --accent-ink:#0a130f; --live:#ff7b6c; --soft:#1d2923; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1411; --surface:#161f1a; --ink:#e8efe9; --muted:#93a39a; --line:#28342e;
+  --accent:#52c495; --accent-ink:#0a130f; --live:#ff7b6c; --soft:#1d2923; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.45}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header h1{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.1;margin:0;text-wrap:balance}
+header p{margin:6px 0 0;color:var(--muted);max-width:60ch}
+
+/* плеєр */
+.deck{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 6px 18px -14px rgba(0,0,0,.45)}
+.now{padding:14px 16px 10px;display:flex;flex-direction:column;gap:4px;min-height:150px}
+.meta{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12.5px;letter-spacing:.02em}
+.meta b{font-weight:600;color:var(--ink)}
+.meta span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+.it{font-family:var(--display);font-weight:700;font-size:clamp(24px,6.4vw,38px);line-height:1.12;margin:6px 0 0;overflow-wrap:anywhere;text-wrap:balance}
+.it.long{font-size:clamp(19px,4.6vw,26px)}
+.tr{margin:0;color:var(--accent);font-weight:500;font-size:15px;overflow-wrap:anywhere}
+.uk{margin:2px 0 0;font-size:17px;overflow-wrap:anywhere}
+.veil{filter:blur(7px);opacity:.55;user-select:none}
+.phases{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.phases span{font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--soft);color:var(--muted)}
+.phases span.on{background:var(--live);color:#fff}
+.bar{height:3px;background:var(--soft)}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+.transport{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 12px;border-top:1px solid var(--line)}
+.tb{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:transparent;display:grid;place-items:center}
+.tb svg{width:20px;height:20px;fill:currentColor}
+.tb.play{width:58px;height:58px;background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.tb.play svg{width:24px;height:24px}
+.tb:active{transform:scale(.96)}
+.speed{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 12px;padding:8px 12px;border-top:1px solid var(--line)}
+.speed>span{color:var(--muted);font-size:13px}
+.speed .seg button{padding:6px 10px;font-variant-numeric:tabular-nums}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.tools details.panel{flex:1 1 150px;min-width:0}
+.tools details.panel[open]{flex-basis:100%}
+.tools summary>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* перемикачі */
+.opt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.opt>span{color:var(--muted);font-size:13px}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:6px 11px;font-size:13.5px;border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+
+details.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+details.panel>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:600}
+details.panel>summary::-webkit-details-marker{display:none}
+details.panel>summary small{font-weight:400;color:var(--muted)}
+details.panel>summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);flex:none;margin-left:auto}
+details.panel[open]>summary::after{transform:rotate(-135deg)}
+details.panel>summary span{min-width:0}
+.body{padding:4px 14px 14px;display:flex;flex-direction:column;gap:12px}
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.topics button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.topics button b{font-weight:600}
+.topics button small{color:var(--muted);font-size:12px}
+.topics button[aria-current="true"]{border-color:var(--accent);background:var(--soft)}
+select{font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:6px 8px;max-width:100%}
+.note{margin:0;color:var(--muted);font-size:13px}
+.note.warn{color:var(--live)}
+
+/* доріжка */
+.list h2{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+ol{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+ol li+li{border-top:1px solid var(--line)}
+ol button{width:100%;text-align:left;border:0;background:transparent;padding:9px 12px;display:grid;grid-template-columns:28px minmax(0,1fr);gap:2px 8px;align-items:baseline}
+ol .n{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;grid-row:span 2}
+ol .a{font-family:var(--display);font-weight:500;font-size:17px;overflow-wrap:anywhere}
+ol .b{color:var(--muted);font-size:13.5px;overflow-wrap:anywhere}
+ol li[aria-current="true"] button{background:var(--soft)}
+ol li[aria-current="true"] .n{color:var(--live);font-weight:700}
+@media (max-width:560px){
+  .wrap{gap:12px;padding-block:12px 40px}
+  header h1{font-size:22px}
+  header p{font-size:13px;margin-top:2px}
+  details.panel>summary{padding:10px 12px;font-size:14px}
+  .body{padding:2px 12px 12px}
+  .topics{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+  .topics button{padding:8px 9px;font-size:13.5px}
+  .topics button small{font-size:11px}
+  .opt{flex-direction:column;align-items:stretch;gap:5px}
+  .seg{display:flex}
+  .seg button{flex:1 1 auto;padding:9px 8px;min-height:40px}
+  .now{min-height:0;padding:10px 12px 8px}
+  .it{margin-top:2px}
+  .uk{font-size:16px}
+  .phases{gap:4px;margin-top:6px}
+  .phases span{font-size:11px;padding:2px 7px}
+  .transport{gap:8px;padding:8px 10px}
+  .speed{padding:6px 10px}
+  .speed .seg{flex:1 1 100%}
+  .speed .seg button{min-height:36px;padding:6px 4px}
+  .tb{width:44px;height:44px}.tb.play{width:56px;height:56px}
+  ol button{padding:10px 12px}
+}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Італійська на слух</h1>
+    <p>Слова й фрази з уроків італійської та курсу з безпеки праці: італійською, переклад, ще раз італійською, пауза на повтор уголос.</p>
+  </header>
+
+  <div class="tools">
+  <details class="panel" id="topicsBox">
+    <summary><span><small>Тема</small> <span id="topicSum"></span></span></summary>
+    <div class="body"><div class="topics" id="topics"></div></div>
+  </details>
+  <details class="panel" id="setBox">
+    <summary><span>Налаштування <small id="voiceSum"></small></span></summary>
+    <div class="body">
+      <div class="opt"><span>Повторів італійською</span><div class="seg" data-key="reps"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button></div></div>
+      
+      <div class="opt"><span>Порядок</span><div class="seg" data-key="seq"><button data-v="sand">італ. → переклад → італ. → повтор</button><button data-v="it">італ. → переклад</button><button data-v="uk">переклад → італ.</button></div></div>
+      <div class="opt"><span>Пауза на повтор уголос</span><div class="seg" data-key="gap"><button data-v="off">без паузи</button><button data-v="short">коротка</button><button data-v="long">довга</button></div></div>
+      <div class="opt"><span>Переклад</span><div class="seg" data-key="ukVoice"><button data-v="true">озвучувати</button><button data-v="false">лише на екрані</button></div></div>
+      <div class="opt"><span>Самоперевірка</span><div class="seg" data-key="hide"><button data-v="false">усе видно</button><button data-v="true">ховати відповідь</button></div></div>
+      <div class="opt"><span>Коли тема скінчилась</span><div class="seg" data-key="after"><button data-v="loop">повторити</button><button data-v="next">наступна тема</button><button data-v="stop">зупинитись</button></div></div>
+      <div class="opt"><span>Вимова літерами</span><div class="seg" data-key="tr"><button data-v="true">показувати</button><button data-v="false">сховати</button></div></div>
+      <div class="opt" id="voiceRow" hidden><label for="voiceSel"><span>Італійський голос</span></label><select id="voiceSel"></select></div>
+      <p class="note" id="voiceNote"></p>
+      <p class="note">Звук іде через голос вашого пристрою, тому екран має лишатися ввімкненим: із заблокованим телефоном програвання зупиниться.</p>
+    </div>
+  </details>
+  </div>
+
+  <section class="deck" aria-label="Плеєр">
+    <div class="now" id="card">
+      <div class="meta"><span><b id="topicName"></b></span><span id="pos"></span></div>
+      <p class="it" id="it" lang="it"></p>
+      <p class="tr" id="tr"></p>
+      <p class="uk" id="uk"></p>
+      <div class="phases" id="phases"></div>
+    </div>
+    <div class="bar"><i id="fill"></i></div>
+    <div class="speed"><span>Швидкість італійської</span><div class="seg" data-key="rate"><button data-v="0.6">0,6×</button><button data-v="0.75">0,75×</button><button data-v="0.9">0,9×</button><button data-v="1">1×</button><button data-v="1.2">1,2×</button></div></div>
+    <div class="transport">
+      <button class="tb" id="again" aria-label="Ще раз це слово" title="Ще раз"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg></button>
+      <button class="tb" id="prev" aria-label="Попереднє" title="Попереднє"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+      <button class="tb play" id="play" aria-label="Слухати"><svg viewBox="0 0 24 24" id="playIcon"><path d="M7 4v16l13-8z"/></svg></button>
+      <button class="tb" id="next" aria-label="Наступне" title="Наступне"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+      <button class="tb" id="shuf" aria-label="Перемішати" aria-pressed="false" title="Перемішати"><svg viewBox="0 0 24 24"><path d="M17 3l4 4-4 4V8h-2.2l-2.3 3.1-1.2-1.7L13.8 6H17zM3 6h4.2l8 12H17v-3l4 4-4 4v-3h-2.8l-8-12H3zm0 12h3.2l2.3-3.1 1.2 1.7L7.2 20H3z"/></svg></button>
+    </div>
+  </section>
+
+
+
+  <section class="list">
+    <h2 id="listTitle"></h2>
+    <ol id="list"></ol>
+  </section>
+</div>
+
+<script>
+/* Теми зібрано з конспектів уроків і словника. Формат рядка: італійською = українською */
+const RAW = [
+["Вітання і знайомство", "конспект 01.06, діалоги", `
+ciao = привіт
+salve = вітаю
+come stai? = як справи? (до знайомого)
+come sta? = як ваші справи? (ввічливо)
+come state? = як ви? (до кількох людей)
+come va? = як воно?
+sto bene, grazie = у мене все добре, дякую
+e tu? = а ти?
+anche io sto bene = у мене теж усе добре
+come ti chiami? = як тебе звати?
+mi chiamo Marco = мене звати Марко
+io sono Maria = я Марія
+piacere di conoscerti = приємно познайомитися
+piacere mio = мені теж приємно
+quanti anni hai? = скільки тобі років?
+io ho vent'anni = мені двадцять років
+io sono di Milano = я з Мілана
+tu sei italiana? = ти італійка?
+mi dispiace = мені шкода
+capisco = розумію
+grazie = дякую
+per favore = будь ласка
+io ho molto lavoro = у мене багато роботи
+ho bisogno di più pratica = мені потрібно більше практики
+`],
+["Essere і avere", "конспект 01.06", `
+essere = бути
+io sono = я є
+tu sei = ти є
+lui è = він є
+lei è = вона є
+noi siamo = ми є
+voi siete = ви є
+loro sono = вони є
+avere = мати
+io ho = я маю
+tu hai = ти маєш
+lui ha = він має
+noi abbiamo = ми маємо
+voi avete = ви маєте
+loro hanno = вони мають
+c'è = є (про одне)
+ci sono = є (про кілька)
+io sono medico = я лікар
+noi siamo studenti = ми студенти
+tu sei stanco oggi = ти сьогодні втомлений
+voi siete tristi = ви сумні
+loro sono felici = вони щасливі
+Luca è a casa = Лука вдома
+io ho una macchina = у мене є машина
+io ho fame = я голодний
+io ho sete = я хочу пити
+io ho due fratelli = у мене два брати
+noi abbiamo un cane = у нас є собака
+lui ha trentacinque anni = йому тридцять п'ять років
+Marco è felice perché ha un buon lavoro = Марко щасливий, бо має хорошу роботу
+`],
+["Артиклі та іменники", "конспект 29.05", `
+il ragazzo = хлопець
+le ragazze = дівчата
+il libro = книга
+i libri = книги
+un libro = якась книга
+lo zaino = рюкзак
+gli zaini = рюкзаки
+uno zaino = якийсь рюкзак
+lo studente = студент
+gli studenti = студенти
+lo psicologo = психолог
+lo specchio = дзеркало
+l'amico = друг
+gli amici = друзі
+l'amica = подруга
+le amiche = подруги
+un'amica = одна подруга
+la casa = дім
+le case = будинки
+una bambina = дівчинка
+i bambini = діти
+l'albero = дерево
+l'isola = острів
+gli uomini = чоловіки
+la penna = ручка
+l'occhio = око
+gli occhi = очі
+l'università = університет
+la lezione = урок
+l'orologio = годинник
+gli insegnanti = вчителі
+la chiave = ключ
+le chiavi = ключі
+l'animale = тварина
+la scuola = школа
+la stazione = станція
+il cane = собака
+il gatto = кіт
+il fiore = квітка
+l'orso = ведмідь
+lo scoiattolo = білка
+una bottiglia = пляшка
+la canzone = пісня
+l'uva = виноград
+l'erba = трава
+`],
+["Числа", "конспект 02.06", `
+uno = один
+due = два
+tre = три
+quattro = чотири
+cinque = п'ять
+sei = шість
+sette = сім
+otto = вісім
+nove = дев'ять
+dieci = десять
+undici = одинадцять
+dodici = дванадцять
+tredici = тринадцять
+quattordici = чотирнадцять
+quindici = п'ятнадцять
+sedici = шістнадцять
+diciassette = сімнадцять
+diciotto = вісімнадцять
+diciannove = дев'ятнадцять
+venti = двадцять
+ventuno = двадцять один
+ventidue = двадцять два
+venticinque = двадцять п'ять
+ventotto = двадцять вісім
+trenta = тридцять
+trentasette = тридцять сім
+quaranta = сорок
+quarantacinque = сорок п'ять
+cinquanta = п'ятдесят
+cinquantatré = п'ятдесят три
+sessanta = шістдесят
+sessantaquattro = шістдесят чотири
+settanta = сімдесят
+ottanta = вісімдесят
+novanta = дев'яносто
+cento = сто
+mille = тисяча
+`],
+["Ціни й покупки", "конспект 02.06", `
+quanto costa? = скільки коштує?
+quanto costano? = скільки коштують?
+il prezzo = ціна
+un euro = один євро
+un centesimo = один цент
+cento centesimi = сто центів
+quanto costa questo libro? = скільки коштує ця книга?
+questo libro costa diciassette euro = ця книга коштує сімнадцять євро
+quanto costa questa maglietta? = скільки коштує ця футболка?
+la maglietta costa venticinque euro = футболка коштує двадцять п'ять євро
+qual è il prezzo di questo computer? = яка ціна цього комп'ютера?
+questo computer costa cinquecento euro = цей комп'ютер коштує п'ятсот євро
+troppo caro = надто дорого
+costoso = дорогий
+economico = недорогий
+il ristorante è troppo caro = ресторан надто дорогий
+molto = дуже, багато
+questa casa = цей будинок
+queste case = ці будинки
+fare la spesa = робити покупки
+`],
+["Котра година", "конспект 04.06", `
+che ora è? = котра година?
+che ore sono? = котра година?
+sono le otto = восьма година
+sono le undici = одинадцята година
+alle undici = об одинадцятій
+è mezzogiorno = полудень
+è mezzanotte = північ
+un quarto = чверть
+mezza = половина
+meno = без, мінус
+sono le tre di mattina = третя ранку
+sono le due di pomeriggio = друга дня
+sono le tredici = тринадцята година
+sono le sedici e dieci = шістнадцята десять
+sono le sedici e un quarto = чверть на п'яту
+sono le otto e mezza = пів на дев'яту
+sono le diciassette meno un quarto = за чверть п'ята
+sono le diciassette meno dieci = за десять п'ята
+sono le tre e venticinque = третя двадцять п'ять
+è l'una e cinque = перша година п'ять хвилин
+sono le otto e un quarto di mattina = чверть на дев'яту ранку
+sono le ventidue meno un quarto = за чверть десята вечора
+è mezzanotte e cinque = п'ять хвилин по півночі
+a che ora andate a dormire? = о котрій ви лягаєте спати?
+noi andiamo a dormire alle ventuno = ми лягаємо спати о двадцять першій
+`],
+["Коли і як часто", "конспекти, словник", `
+oggi = сьогодні
+ieri = вчора
+domani = завтра
+stasera = сьогодні ввечері
+stamattina = сьогодні вранці
+adesso = зараз
+la mattina = ранок
+il pomeriggio = друга половина дня
+la sera = вечір
+la notte = ніч
+il giorno = день
+la settimana = тиждень
+questa settimana = цього тижня
+la settimana prossima = наступного тижня
+il fine settimana = вихідні
+il mese = місяць
+l'anno = рік
+quest'anno = цього року
+l'anno prossimo = наступного року
+ogni giorno = щодня
+ogni mattina = щоранку
+ogni sera = щовечора
+sempre = завжди
+spesso = часто
+di solito = зазвичай
+a volte = іноді
+mai = ніколи
+presto = рано, скоро
+tardi = пізно
+già = уже
+poi = потім
+dopo = після
+prima di = перед
+subito dopo = одразу після
+dopo di questo = після цього
+dal lunedì al venerdì = з понеділка по п'ятницю
+sabato = субота
+domenica = неділя
+l'estate = літо
+l'autunno = осінь
+l'inverno = зима
+`],
+["Дієслова: словник", "конспект 03.06", `
+parlare = говорити
+cucinare = готувати їжу
+preparare = готувати, приготувати
+mangiare = їсти
+abitare = жити, мешкати
+guardare = дивитися
+camminare = ходити пішки
+passeggiare = гуляти
+ascoltare = слухати
+studiare = вчитися
+imparare = вчити, опановувати
+lavorare = працювати
+comprare = купувати
+cercare = шукати
+amare = любити
+costare = коштувати
+tornare = повертатися
+lasciare = залишати
+riposare = відпочивати
+prendere = брати
+leggere = читати
+scrivere = писати
+ripetere = повторювати
+rispondere = відповідати
+chiedere = питати, просити
+perdere = губити, втрачати
+mettere = класти
+chiudere = зачиняти
+vincere = вигравати
+vendere = продавати
+vivere = жити
+esistere = існувати
+dormire = спати
+aprire = відчиняти
+partire = вирушати, від'їжджати
+offrire = пригощати, пропонувати
+sentire = чути, відчувати
+seguire = слідувати
+capire = розуміти
+finire = закінчувати
+pulire = чистити, прибирати
+`],
+["Теперішній час: -are, -ere, -ire", "конспект 03.06, «Приклади»", `
+io cucino = я готую
+tu cucini = ти готуєш
+lui cucina = він готує
+noi cuciniamo = ми готуємо
+voi cucinate = ви готуєте
+loro cucinano = вони готують
+io prendo = я беру
+tu prendi = ти береш
+lei prende = вона бере
+noi prendiamo = ми беремо
+voi prendete = ви берете
+loro prendono = вони беруть
+io dormo = я сплю
+tu dormi = ти спиш
+lui dorme = він спить
+noi dormiamo = ми спимо
+voi dormite = ви спите
+loro dormono = вони сплять
+tu mangi una pizza per cena = ти їси піцу на вечерю
+Marco parla al telefono con un amico = Марко розмовляє телефоном з другом
+noi abitiamo in Italia = ми живемо в Італії
+voi guardate la televisione la sera = ви дивитеся телевізор увечері
+Anna e Luca camminano nel parco = Анна і Лука гуляють у парку
+io ascolto la musica ogni giorno = я слухаю музику щодня
+tu studi inglese all'università = ти вивчаєш англійську в університеті
+io leggo un libro interessante = я читаю цікаву книгу
+tu scrivi una lettera = ти пишеш листа
+Marco prende il caffè al bar = Марко п'є каву в барі
+noi leggiamo il giornale ogni mattina = ми читаємо газету щоранку
+io dormo tutta la notte = я сплю всю ніч
+tu apri la finestra = ти відчиняєш вікно
+noi rispondiamo alla domanda = ми відповідаємо на запитання
+i ragazzi perdono sempre le chiavi = хлопці завжди гублять ключі
+io metto i libri sul tavolo = я кладу книги на стіл
+voi vincete la partita di calcio = ви виграєте футбольний матч
+tu offri un gelato al tuo amico = ти пригощаєш морозивом свого друга
+noi sentiamo un rumore in cucina = ми чуємо шум на кухні
+io parlo velocemente = я говорю швидко
+`],
+["Andare, venire, fare", "конспект 08.06, словник", `
+andare = йти, їхати
+io vado = я йду
+tu vai = ти йдеш
+lui va = він іде
+noi andiamo = ми йдемо
+voi andate = ви йдете
+loro vanno = вони йдуть
+venire = приходити
+io vengo = я приходжу
+tu vieni = ти приходиш
+lei viene = вона приходить
+noi veniamo = ми приходимо
+voi venite = ви приходите
+loro vengono = вони приходять
+fare = робити
+io faccio = я роблю
+tu fai = ти робиш
+lui fa = він робить
+noi facciamo = ми робимо
+voi fate = ви робите
+loro fanno = вони роблять
+io vado al supermercato ogni sabato = я ходжу до супермаркету щосуботи
+tu vieni con noi al cinema stasera? = ти підеш з нами в кіно сьогодні ввечері?
+Marco fa sempre colazione alle sette = Марко завжди снідає о сьомій
+gli amici vengono a casa mia per cena = друзі приходять до мене додому на вечерю
+voi fate sport nel fine settimana? = ви займаєтеся спортом на вихідних?
+loro vengono dalla festa = вони йдуть з вечірки
+io e Maria andiamo spesso a Roma per lavoro = я і Марія часто їздимо до Рима по роботі
+io parto da Milano = я виїжджаю з Мілана
+io torno da scuola = я повертаюся зі школи
+`],
+["Uscire, bere, stare, capire", "словник, конспект 08.06", `
+uscire = виходити
+io esco = я виходжу
+tu esci = ти виходиш
+lui esce = він виходить
+noi usciamo = ми виходимо
+voi uscite = ви виходите
+loro escono = вони виходять
+bere = пити
+io bevo = я п'ю
+tu bevi = ти п'єш
+lei beve = вона п'є
+noi beviamo = ми п'ємо
+voi bevete = ви п'єте
+loro bevono = вони п'ють
+stare = бути, перебувати, почуватися
+io sto = я є, я почуваюся
+tu stai = ти є
+lui sta = він є
+noi stiamo = ми є
+voi state = ви є
+loro stanno = вони є
+capire = розуміти
+io capisco = я розумію
+tu capisci = ти розумієш
+lui capisce = він розуміє
+noi capiamo = ми розуміємо
+voi capite = ви розумієте
+loro capiscono = вони розуміють
+io pulisco la mia stanza = я прибираю свою кімнату
+lei finisce i suoi compiti = вона закінчує свої домашні завдання
+noi finiamo i compiti prima di cena = ми закінчуємо домашнє завдання перед вечерею
+loro puliscono la loro stanza il sabato mattina = вони прибирають свою кімнату в суботу вранці
+`],
+["Зворотні дієслова і мій день", "конспект 08.06, «Більше чи менше»", `
+svegliarsi = прокидатися
+alzarsi = вставати
+lavarsi = митися
+vestirsi = одягатися
+pettinarsi = зачісуватися
+riposarsi = відпочивати
+chiamarsi = називатися
+addormentarsi = засинати
+prepararsi = готуватися
+io mi lavo = я миюся
+tu ti lavi = ти миєшся
+lui si lava = він миється
+noi ci laviamo = ми миємося
+voi vi lavate = ви миєтеся
+loro si lavano = вони миються
+io mi sveglio alle sei = я прокидаюся о шостій
+faccio la doccia = я приймаю душ
+faccio colazione alle sette = я снідаю о сьомій
+mi vesto e vado al lavoro = я одягаюся і йду на роботу
+io pranzo alle tredici e mezza = я обідаю о пів на другу
+finisco di lavorare alle diciotto e mezza = я закінчую працювати о пів на сьому вечора
+torno a casa = я повертаюся додому
+gioco con i miei figli = я граюся зі своїми дітьми
+noi ceniamo alle venti = ми вечеряємо о двадцятій
+io mi lavo i denti dopo colazione = я чищу зуби після сніданку
+noi ci laviamo le mani prima di mangiare = ми миємо руки перед їжею
+Luca si riposa dopo il lavoro = Лука відпочиває після роботи
+loro si vestono in fretta = вони швидко одягаються
+Maria si addormenta presto = Марія засинає рано
+di solito mi riposo con la mia famiglia = зазвичай я відпочиваю з родиною
+andiamo a letto = ми йдемо спати
+a volte ci svegliamo di notte = іноді ми прокидаємося вночі
+`],
+["Мій, твій, його, наш", "конспект 04.06, «мій. твій»", `
+il mio libro = моя книга
+i miei libri = мої книги
+la mia casa = мій дім
+le mie case = мої будинки
+il tuo gatto = твій кіт
+i tuoi gatti = твої коти
+la tua penna = твоя ручка
+le tue penne = твої ручки
+il suo cane = його собака
+i suoi amici = його друзі
+la sua finestra = її вікно
+le sue macchine = її машини
+il nostro giardino = наш сад
+i nostri vicini = наші сусіди
+la nostra borsa = наша сумка
+le nostre canzoni = наші пісні
+il vostro armadio = ваша шафа
+i vostri giornali = ваші газети
+la vostra valigia = ваша валіза
+le vostre fotografie = ваші фотографії
+il loro appartamento = їхня квартира
+i loro segreti = їхні секрети
+la loro casa = їхній дім
+le loro torce = їхні ліхтарики
+questo è il mio libro = це моя книга
+questa è la tua penna? = це твоя ручка?
+dov'è il tuo zaino? = де твій рюкзак?
+la sua casa è molto grande = її будинок дуже великий
+questa è la casa di Marco = це дім Марка
+i miei genitori vivono a Napoli = мої батьки живуть у Неаполі
+le mie scarpe sono nere = моє взуття чорне
+i tuoi insegnanti sono molto gentili = твої вчителі дуже добрі
+i suoi gatti sono molto carini = її коти дуже милі
+`],
+["Їжа і напої", "словник, конспекти", `
+il cibo = їжа
+la colazione = сніданок
+fare colazione = снідати
+il pranzo = обід
+pranzare = обідати
+la cena = вечеря
+cenare = вечеряти
+lo spuntino = легкий перекус
+la merenda = підвечірок, перекус у школу
+la frittata = омлет
+la pizza = піца
+la pasta = паста
+il pane = хліб
+il panino = бутерброд
+il riso = рис
+la mela = яблуко
+la torta = торт
+il gelato = морозиво
+il prosciutto = шинка
+il pomodoro = помідор
+il sale = сіль
+lo zucchero = цукор
+l'acqua = вода
+l'acqua frizzante = газована вода
+il caffè = кава
+il tè = чай
+il latte = молоко
+il vino = вино
+la birra = пиво
+le bevande = напої
+bevo sempre il tè con lo zucchero = я завжди п'ю чай із цукром
+preferisco il caffè = я віддаю перевагу каві
+stasera io mangio i maccheroni = сьогодні ввечері я їм макарони
+di solito mangiamo una frittata = зазвичай ми їмо омлет
+`],
+["Дім", "конспекти, таблиця прийменників", `
+la casa = дім
+l'appartamento = квартира
+la stanza = кімната
+la camera = кімната, спальня
+la cucina = кухня
+il salotto = вітальня
+il giardino = сад
+la porta = двері
+la finestra = вікно
+il muro = стіна
+il tavolo = стіл
+il letto = ліжко
+il divano = диван
+l'armadio = шафа
+lo specchio = дзеркало
+lo scaffale = полиця
+la scrivania = письмовий стіл
+la lampada = лампа
+il piatto = тарілка
+il bicchiere = склянка
+la scatola = коробка
+la televisione = телевізор
+il gatto è sul divano = кіт на дивані
+i vestiti sono nell'armadio = одяг у шафі
+il quaderno è sulla scrivania = зошит на письмовому столі
+la scatola è sull'armadio = коробка на шафі
+c'è una pianta sulla finestra = на підвіконні є рослина
+`],
+["Речі й одяг", "словник, конспекти", `
+il quaderno = зошит
+la matita = олівець
+il giornale = газета
+la lettera = лист
+il telefono = телефон
+il computer = комп'ютер
+le cuffie = навушники
+l'orologio = годинник
+la borsa = сумка
+la valigia = валіза
+il portafoglio = гаманець
+la tasca = кишеня
+il regalo = подарунок
+il pacco = пакунок
+i vestiti = одяг
+le scarpe = взуття
+la maglietta = футболка
+la gonna = спідниця
+la macchina = машина
+la fotografia = фотографія
+il biglietto = квиток
+le caramelle sono nelle tasche = цукерки в кишенях
+i libri sono negli zaini = книги в рюкзаках
+il pacco è pesante = пакунок важкий
+`],
+["Люди і родина", "конспекти, словник", `
+la persona = людина
+il ragazzo = хлопець
+la ragazza = дівчина
+il bambino = хлопчик, дитина
+la bambina = дівчинка
+l'amico = друг
+l'amica = подруга
+la famiglia = родина
+i genitori = батьки
+la madre = мати
+la mamma = мама
+il fratello = брат
+la sorella = сестра
+il marito = чоловік
+i figli = діти
+i nonni = дідусь і бабуся
+la nonna = бабуся
+lo zio = дядько
+il vicino = сусід
+la vicina = сусідка
+lo studente = студент
+l'insegnante = вчитель
+il professore = викладач
+il medico = лікар
+il dottore = лікар
+il neonato = немовля
+l'adolescente = підліток
+l'adulto = дорослий
+lui ha una sorella minore = у нього є молодша сестра
+abbiamo un bambino piccolo = у нас є маленька дитина
+`],
+["Місто і транспорт", "конспекти, словник, тексти", `
+la città = місто
+il centro = центр
+il paese = країна, село
+la scuola = школа
+l'università = університет
+l'ufficio = офіс
+il lavoro = робота
+il supermercato = супермаркет
+il mercato = ринок
+la farmacia = аптека
+l'ospedale = лікарня
+la biblioteca = бібліотека
+la banca = банк
+il ristorante = ресторан
+il cinema = кінотеатр
+il museo = музей
+il parco = парк
+la palestra = спортзал
+la stazione = станція, вокзал
+l'aeroporto = аеропорт
+l'edicola = газетний кіоск
+il mare = море
+la spiaggia = пляж
+il lago = озеро
+la montagna = гори
+il treno = потяг
+l'autobus = автобус
+il viaggio = подорож
+la vacanza = відпустка
+andare a piedi = йти пішки
+io vado al supermercato = я йду до супермаркету
+noi torniamo dalla spiaggia = ми повертаємося з пляжу
+vengo dall'aeroporto = я їду з аеропорту
+Anna vive nel centro storico della città = Анна живе в історичному центрі міста
+`],
+["Прийменники", "«di.da.su.a», таблиця", `
+di = про, від, чий
+a = в, до, о котрій
+da = з, від, до когось
+in = в, у
+su = на, про
+con = з
+per = для
+tra = між, через
+io parlo di te = я говорю про тебе
+il libro di Marco = книга Марка
+ho paura di questo = я цього боюся
+parlo del tempo = я говорю про погоду
+parlo dei compiti = я говорю про домашні завдання
+io abito a Roma = я живу в Римі
+vado al concerto = я йду на концерт
+vado allo spettacolo = я йду на виставу
+io vado a scuola alle undici = я йду до школи об одинадцятій
+io vengo da te = я йду до тебе
+lei va dal dottore = вона йде до лікаря
+loro vanno dallo zio = вони йдуть до дядька
+io vivo in Italia = я живу в Італії
+io sono in ufficio = я в офісі
+io studio in biblioteca = я вчуся в бібліотеці
+io gioco nel parco = я граюся в парку
+il libro è sul tavolo = книга на столі
+io scrivo su un quaderno = я пишу в зошиті
+io scrivo con la penna = я пишу ручкою
+noi viaggiamo con la macchina = ми подорожуємо машиною
+voi parlate con gli amici = ви розмовляєте з друзями
+questo regalo è per te = цей подарунок для тебе
+io studio per l'esame = я вчуся до іспиту
+io parto per lavoro = я їду по роботі
+arrivo tra dieci minuti = я прийду через десять хвилин
+la scuola è tra la casa e l'ufficio = школа між домом і офісом
+noi lavoriamo nell'ufficio dal lunedì al venerdì = ми працюємо в офісі з понеділка по п'ятницю
+Paolo torna dalla palestra alle otto di sera = Паоло повертається зі спортзалу о восьмій вечора
+`],
+["Прикметники", "словник, конспекти", `
+grande = великий
+piccolo = малий
+alto = високий
+bello = гарний
+brutto = негарний, поганий
+buono = добрий, смачний
+cattivo = поганий
+nuovo = новий
+vecchio = старий
+caro = дорогий
+facile = легкий, простий
+difficile = складний
+pesante = важкий
+veloce = швидкий
+caldo = гарячий, теплий
+freddo = холодний
+stanco = втомлений
+felice = щасливий
+triste = сумний
+simpatico = приємний, симпатичний
+gentile = ввічливий, люб'язний
+carino = милий
+tranquillo = спокійний
+occupato = зайнятий
+famoso = відомий
+popolare = популярний
+interessante = цікавий
+divertente = веселий
+intelligente = розумний
+pieno = повний
+nero = чорний
+importante = важливий
+precedente = попередній
+la lingua italiana è facile = італійська мова легка
+`],
+["Більше, менше, най-", "«Більше чи менше», д/з 19.06 і 14.07", `
+più = більше
+meno = менше
+Marco è più alto di Luca = Марко вищий за Луку
+la pizza è più buona della pasta = піца смачніша за пасту
+questa borsa è meno costosa di quella = ця сумка менш дорога, ніж та
+Marco è tanto alto quanto Luca = Марко такий же високий, як Лука
+il gatto è così tranquillo come il cane = кіт такий же спокійний, як собака
+oggi il tempo è più bello di ieri = сьогодні погода краща, ніж учора
+Roma è più grande di Firenze = Рим більший за Флоренцію
+Paolo è meno stanco di Francesca = Паоло менш втомлений, ніж Франческа
+l'inverno è più freddo dell'autunno = зима холодніша за осінь
+la matematica è meno difficile della storia = математика менш складна, ніж історія
+il mare è più grande del lago = море більше за озеро
+un elefante è più pesante di un cane = слон важчий за собаку
+il treno è più veloce dell'autobus = потяг швидший за автобус
+oggi fa meno caldo di ieri = сьогодні менш спекотно, ніж учора
+il mio zaino è meno pesante del tuo = мій рюкзак менш важкий, ніж твій
+questo esercizio è più facile di quello = ця вправа легша за ту
+noi mangiamo la pasta più spesso del riso = ми їмо пасту частіше, ніж рис
+in Italia fa caldo = в Італії спекотно
+fa freddo e piove sempre = холодно і завжди дощить
+bellissimo = дуже гарний
+buonissimo = дуже смачний
+gentilissimo = дуже ввічливий
+facilissimo = дуже легкий
+grandissimo = дуже великий
+Roma è una città bellissima = Рим дуже гарне місто
+Anna è felicissima = Анна дуже щаслива
+il caffè è caldissimo = кава дуже гаряча
+`],
+["Минулий час: passato prossimo", "«Минулий час», д/з 23.06 і 30.06", `
+ieri io ho mangiato una mela = вчора я з'їв яблуко
+ieri io sono andato al supermercato = вчора я ходив до супермаркету
+ieri loro sono andati al mare = вчора вони їздили на море
+io ho camminato = я ходив пішки
+io ho bevuto il latte al bar = я випив молоко в барі
+io ti ho creduto = я тобі повірив
+Marta ha mangiato una pizza buonissima = Марта з'їла дуже смачну піцу
+noi siamo tornati a casa molto tardi = ми повернулися додому дуже пізно
+tu hai guardato un film ieri sera? = ти дивився фільм учора ввечері?
+Luca e Paolo sono usciti con gli amici = Лука і Паоло вийшли з друзями
+io ho finito i compiti dopo cena = я закінчив домашнє завдання після вечері
+Anna è restata a Roma per tre giorni = Анна залишилася в Римі на три дні
+voi avete scritto una bella lettera = ви написали гарного листа
+oggi mia sorella si è svegliata molto tardi = сьогодні моя сестра прокинулася дуже пізно
+noi siamo andati al cinema sabato sera = ми ходили в кіно в суботу ввечері
+Maria ha comprato un libro molto interessante = Марія купила дуже цікаву книгу
+io ho preparato una torta per il compleanno di mia madre = я приготував торт на день народження моєї мами
+i miei amici hanno ballato molto durante la festa = мої друзі багато танцювали під час вечірки
+noi siamo arrivati a casa molto tardi = ми приїхали додому дуже пізно
+lei ha scritto una risposta molto gentile = вона написала дуже ввічливу відповідь
+voi avete preso il treno delle otto? = ви сіли на потяг о восьмій?
+mia sorella ha ricevuto un regalo bellissimo = моя сестра отримала дуже гарний подарунок
+perché sei arrivato così tardi? = чому ти приїхав так пізно?
+stamattina mi sono svegliato molto presto = сьогодні вранці я прокинувся дуже рано
+Francesca ha trovato le chiavi sul tavolo = Франческа знайшла ключі на столі
+noi siamo partiti per Napoli alle nove = ми вирушили до Неаполя о дев'ятій
+Marco ha risposto all'e-mail del professore = Марко відповів на електронний лист викладача
+io mi sono vestito in fretta = я швидко одягнувся
+i miei amici sono venuti a casa mia = мої друзі прийшли до мене додому
+tu hai perso il biglietto dell'autobus = ти загубив квиток на автобус
+noi abbiamo deciso di fare una gita domenica = ми вирішили поїхати на екскурсію в неділю
+`],
+["Минулий час: imperfetto", "«IMPERFETTO»", `
+io parlavo = я говорив
+tu parlavi = ти говорив
+lui parlava = він говорив
+noi parlavamo = ми говорили
+voi parlavate = ви говорили
+loro parlavano = вони говорили
+io ero = я був
+tu eri = ти був
+lei era = вона була
+noi eravamo = ми були
+voi eravate = ви були
+loro erano = вони були
+io facevo = я робив
+ieri alle otto io guardavo la televisione = вчора о восьмій я дивився телевізор
+mentre io studiavo, mia sorella ascoltava la musica = поки я вчився, моя сестра слухала музику
+da bambino io giocavo sempre fuori = у дитинстві я завжди грався надворі
+ogni estate noi andavamo al mare = щоліта ми їздили на море
+quando ero piccolo, leggevo molti libri = коли я був малим, я читав багато книг
+la casa era grande e aveva un giardino = будинок був великий і мав сад
+Maria era stanca e aveva fame = Марія була втомлена і голодна
+faceva freddo e pioveva = було холодно і йшов дощ
+da piccolo io dormivo molto = малим я багато спав
+da piccoli noi prendevamo il treno = малими ми їздили потягом
+mi piaceva fare sport a scuola = мені подобалося займатися спортом у школі
+`],
+["Майбутній час", "«Майбутній час», д/з 01.07", `
+io dormirò = я спатиму
+tu dormirai = ти спатимеш
+lui dormirà = він спатиме
+noi dormiremo = ми спатимемо
+voi dormirete = ви спатимете
+loro dormiranno = вони спатимуть
+domani andrò al lavoro = завтра я піду на роботу
+farai una bella vacanza = у тебе буде гарна відпустка
+studieremo italiano insieme = ми разом вчитимемо італійську
+pioverà domani = завтра буде дощ
+stasera noi mangeremo la pizza = сьогодні ввечері ми їстимемо піцу
+loro torneranno a casa molto tardi = вони повернуться додому дуже пізно
+tu imparerai l'italiano molto presto = ти дуже скоро вивчиш італійську
+voi guarderete il film domani sera = ви подивитеся фільм завтра ввечері
+Maria leggerà un libro interessante = Марія читатиме цікаву книгу
+l'anno prossimo io comprerò una macchina nuova = наступного року я куплю нову машину
+voi avrete molto lavoro = у вас буде багато роботи
+i miei amici arriveranno in Italia quest'estate = мої друзі приїдуть до Італії цього літа
+lui farà i compiti dopo cena = він зробить домашнє завдання після вечері
+domani non sarò a scuola perché andrò al mare = завтра мене не буде в школі, бо я поїду на море
+la settimana prossima noi visiteremo Roma = наступного тижня ми відвідаємо Рим
+loro partiranno alle otto di mattina = вони вирушать о восьмій ранку
+io comprerò un nuovo telefono = я куплю новий телефон
+il professore spiegherà la lezione domani = викладач пояснить урок завтра
+`],
+["Просто зараз: stare + gerundio", "«Теперішній тривалий час», д/з 09.07", `
+sto mangiando = я зараз їм
+stai studiando = ти зараз вчишся
+sta lavorando = він зараз працює
+stiamo parlando = ми зараз розмовляємо
+Sofia sta preparando la valigia = Софія зараз пакує валізу
+noi stiamo cercando un regalo per il compleanno di Marco = ми зараз шукаємо подарунок на день народження Марко
+tu stai cucinando la lasagna = ти зараз готуєш лазанью
+il gatto sta dormendo sul divano = кіт зараз спить на дивані
+mia nonna sta facendo una torta = моя бабуся зараз пече торт
+loro stanno leggendo un libro interessante = вони зараз читають цікаву книгу
+Marco sta preparando la cena = Марко зараз готує вечерю
+che cosa stai facendo in questo momento? = що ти зараз робиш?
+i bambini stanno giocando nel parco = діти зараз граються в парку
+mia sorella sta studiando per l'esame di italiano = моя сестра зараз готується до іспиту з італійської
+perché stai ridendo? = чому ти смієшся?
+gli studenti stanno scrivendo un testo sulla loro città = студенти зараз пишуть текст про своє місто
+mia madre sta facendo la spesa al supermercato = моя мама зараз робить покупки в супермаркеті
+il cane sta dormendo dopo una lunga passeggiata = собака зараз спить після довгої прогулянки
+`],
+["Слова з текстів для читання", "«Словник», «Тексти для читання»", `
+niente = нічого
+il profumo = аромат, парфуми
+il dettaglio = деталь
+il segreto = секрет
+il volume = том, гучність
+alcuni = кілька
+cioè = тобто
+proprio = саме, справді
+proprio oggi = саме сьогодні
+proprio così = саме так
+è proprio bello = це справді красиво
+la temperatura aumenta = температура підвищується
+risparmiare = заощаджувати
+risparmiare tempo = економити час
+perdere tempo = втрачати час
+il tempo = час, погода
+avere tempo = мати час
+passare il tempo = проводити час
+la festa = свято, вечірка
+un giorno di festa = вихідний день
+cosa fai in un giorno di festa? = що ти робиш у вихідний день?
+l'esercizio = вправа
+la pagina precedente = попередня сторінка
+l'accompagnamento = супровід
+l'idea viene dalla Danimarca = ідея походить із Данії
+esiste già in molti paesi europei = це вже існує в багатьох європейських країнах
+`],
+["Безпека праці: хто є хто", "курс 81/08, конспект днів 1–2", `
+il datore di lavoro = роботодавець
+il dirigente = керівник
+il preposto = майстер, бригадир
+il lavoratore = працівник
+i lavoratori = працівники
+il rappresentante dei lavoratori per la sicurezza = представник працівників з безпеки
+il servizio di prevenzione e protezione = служба профілактики та захисту
+il responsabile del servizio = відповідальний за службу
+l'addetto = відповідальний працівник
+il medico competente = компетентний лікар
+le squadre di emergenza = аварійні бригади
+gli organi di vigilanza = наглядові органи
+i vigili del fuoco = пожежники
+i carabinieri = карабінери
+la polizia = поліція
+l'azienda = підприємство
+il contratto = договір
+la mansione = посада, трудова функція
+il cambiamento di mansioni = зміна посади
+i diritti = права
+i doveri = обов'язки
+le sanzioni = санкції
+l'obbligo = обов'язок
+sovrintendere = наглядати
+vigilare = пильнувати
+verificare = перевіряти
+richiedere = вимагати
+informare = інформувати
+segnalare = повідомляти про проблему
+interrompere = перервати
+astenersi = утримуватися
+frequentare un corso = відвідувати курс
+il preposto sovrintende al lavoro degli altri = майстер наглядає за роботою інших
+il datore di lavoro è responsabile della sicurezza = роботодавець відповідає за безпеку
+`],
+["Безпека праці: ризик і закон", "курс 81/08, глосарій", `
+la sicurezza sul lavoro = безпека праці
+la salute = здоров'я
+la sicurezza = безпека
+il pericolo = небезпека
+il rischio = ризик
+il danno = шкода
+la probabilità = ймовірність
+la prevenzione = профілактика
+la protezione = захист
+la valutazione dei rischi = оцінка ризиків
+il documento di valutazione dei rischi = документ оцінки ризиків
+l'informazione = інформування
+la formazione = навчання
+la formazione generale = загальна підготовка
+la formazione specifica = специфічна підготовка
+l'addestramento = практичний тренінг
+rischio basso = низький ризик
+rischio medio = середній ризик
+rischio alto = високий ризик
+l'infortunio = нещасний випадок
+l'infortunio sul lavoro = нещасний випадок на роботі
+l'infortunio in itinere = нещасний випадок по дорозі на роботу
+il mancato infortunio = подія, що ледь не стала нещасним випадком
+l'incidente = інцидент
+la malattia professionale = професійне захворювання
+la causa violenta = насильницька причина
+la legge = закон
+il decreto = декрет
+la norma = норма
+l'articolo = стаття
+il titolo = розділ
+l'allegato = додаток
+la sanzione amministrativa = адміністративна санкція
+l'ammenda = штраф
+l'arresto = арешт
+la prescrizione = припис
+l'ispezione = перевірка
+la riunione periodica = періодична нарада
+la fretta = поспіх
+la distrazione = неуважність
+l'imprudenza = необережність
+la superficialità = поверховість
+il rischio è la probabilità per il danno = ризик — це ймовірність, помножена на шкоду
+la prevenzione ha la priorità sulla protezione = профілактика має пріоритет над захистом
+`],
+["Медогляд і вантажі", "курс 81/08, день 2", `
+la sorveglianza sanitaria = санітарний нагляд
+la visita medica = медичний огляд
+la visita medica preventiva = попередній медогляд
+la visita medica periodica = періодичний медогляд
+la cartella sanitaria e di rischio = медична картка працівника
+l'idoneità alla mansione = придатність до посади
+l'inidoneità temporanea = тимчасова непридатність
+l'inidoneità permanente = постійна непридатність
+almeno una volta all'anno = щонайменше раз на рік
+il controllo sanitario = медичний контроль
+lo stress da lavoro = стрес, пов'язаний з роботою
+la movimentazione manuale dei carichi = ручне переміщення вантажів
+il carico = вантаж
+il carico ingombrante = громіздкий вантаж
+il peso = вага
+sollevare = піднімати
+gambe piegate, schiena diritta = ноги зігнуті, спина пряма
+il carico vicino al corpo = вантаж близько до тіла
+non piegare la schiena = не згинати спину
+la schiena = спина
+le gambe = ноги
+il corpo = тіло
+la colonna = хребет
+il disco intervertebrale = міжхребцевий диск
+l'ernia del disco = грижа диска
+la lombalgia acuta = гострий біль у попереку
+il colpo della strega = простріл у попереку
+la sciatica = ішіас
+gli arti superiori = верхні кінцівки
+il sovraccarico = перевантаження
+la ripetitività = повторюваність рухів
+il tunnel carpale = зап'ястковий канал
+il nervo mediano = серединний нерв
+la turnazione = ротація працівників
+il transpallet = візок для палет
+il rumore = шум
+le vibrazioni = вібрації
+`],
+["Електрика, хімія і захист", "курс 81/08, день 2", `
+il rischio elettrico = електричний ризик
+il cavo = кабель
+la spina = вилка
+la presa = розетка
+la presa multipla = подовжувач із кількома розетками
+la ciabatta = подовжувач
+la messa a terra = заземлення
+la tensione = напруга
+non tirare il cavo per staccare la spina = не тягнути за кабель, щоб вийняти вилку
+non toccare = не торкатися
+mai collegare prese multiple tra loro = ніколи не з'єднувати подовжувачі між собою
+l'elettrocuzione = ураження електричним струмом
+le ustioni = опіки
+l'arresto cardiaco = зупинка серця
+l'arresto respiratorio = зупинка дихання
+il rischio chimico = хімічний ризик
+l'agente chimico pericoloso = небезпечний хімічний агент
+la sostanza = речовина
+la miscela = суміш
+la scheda di sicurezza = паспорт безпеки речовини
+esplosivo = вибуховий
+infiammabile = займистий
+comburente = окисник
+corrosivo = їдкий
+tossico = токсичний
+irritante = подразливий
+nocivo = шкідливий
+pericoloso per l'ambiente = небезпечний для довкілля
+gas compressi = стиснені гази
+i dispositivi di protezione individuale = засоби індивідуального захисту
+l'elmetto = каска
+i guanti = рукавиці
+le calzature = захисне взуття
+gli stivali di gomma = гумові чоботи
+la maschera = маска
+`],
+["Знаки, евакуація, пожежа", "курс 81/08, день 2", `
+la segnaletica di sicurezza = знаки безпеки
+il cartello = табличка
+il segnale = знак, сигнал
+segnali luminosi = світлові сигнали
+segnali acustici = звукові сигнали
+segnali gestuali = жестові сигнали
+il divieto = заборона
+l'obbligo = обов'язок
+giallo = жовтий
+rosso = червоний
+azzurro = блакитний
+verde = зелений
+il triangolo = трикутник
+il cerchio = коло
+il quadrato = квадрат
+giallo e triangolo: pericolo = жовтий трикутник — небезпека
+rosso e cerchio: divieto = червоне коло — заборона
+azzurro e cerchio: obbligo = блакитне коло — обов'язок
+verde e quadrato: vie di fuga = зелений квадрат — шляхи евакуації
+rosso e quadrato: materiale antincendio = червоний квадрат — протипожежне обладнання
+l'emergenza = надзвичайна ситуація
+il piano di emergenza = план дій у надзвичайній ситуації
+l'evacuazione = евакуація
+la via di fuga = шлях евакуації
+l'uscita di emergenza = аварійний вихід
+il punto di raccolta = пункт збору
+l'esercitazione di evacuazione = навчальна евакуація
+le esercitazioni sono annuali = навчання проводять щороку
+il primo soccorso = перша допомога
+l'incendio = пожежа
+il fuoco = вогонь
+la fiamma = полум'я
+il fumo = дим
+il calore = тепло
+il combustibile = горюча речовина
+il comburente = окисник
+l'innesco = джерело запалювання
+l'ossigeno = кисень
+il rilevatore d'incendio = пожежний сповіщувач
+la protezione attiva = активний захист
+la protezione passiva = пасивний захист
+vietato fumare = курити заборонено
+i rifiuti = відходи
+la carta = папір
+la pulizia = прибирання, чистота
+l'impianto elettrico = електроустановка
+stai tranquillo = не хвилюйся
+abbiamo sempre fatto così = ми завжди так робили
+non è mai successo nulla = ніколи нічого не траплялося
+`]
+];
+
+/* ── Вимова: італійська → українськими літерами з наголосом ── */
+const STRESS = {};
+("ìo lùi mìo mìa mìe tùo tùa tùe sùo sùa sùe zìo zìi dùe ventidùe Marìa Sofìa Pàolo Nàpoli " +
+ "èssere prèndere lèggere scrìvere ripètere rispòndere chièdere pèrdere mèttere chiùdere vìncere vèndere vìvere esìstere " +
+ "pàrlano cucìnano prèndono dòrmono vèngono èscono bèvono capìscono puliscono@ làvano cammìnano pèrdono vèstono vìvono còstano parlàvano èrano pàrtono " +
+ "tàvolo màcchina màcchine telèfono zùcchero càmera mèdico psicòlogo àlbero ìsola uòmini simpàtico simpàtici econòmico " +
+ "ùndici dòdici trèdici quattòrdici quìndici sèdici sàbato domènica pàgina fàcile diffìcile àutobus cìnema mùsica " +
+ "farmacìa scrivanìa fotografìa fotografìe paùra sòlito sùbito pròssimo pròssima àbito pìccolo pìccoli scoiàttolo pèttine " +
+ "làmpada scàtola lèttera edìcola matemàtica spettàcolo pràtica còmpiti conòscerti farài dormirài imparerài " +
+ "vìa responsàbile òrgani vìgili polizìa pulizìa òbbligo sovrintèndere richièdere interròmpere perìcolo specìfica malattìa itìnere artìcolo tìtolo periòdica vìsita mèdica temporànea càrichi càrico lombalgìa sciàtica sovraccàrico elèttrico mùltipla mùltiple cardìaco chìmico infiammàbile tòssico màschera segnalètica acùstici triàngolo vìe combustìbile ossìgeno " +
+ "centèsimo centèsimi stòrico lunedì venerdì Danimàrca europèi").split(/\s+/).forEach(w => {
+  w = w.replace("@", "");
+  STRESS[w.normalize("NFD").replace(/[̀́]/g, "").toLowerCase()] = w.toLowerCase();
+});
+STRESS["puliscono"] = "pulìscono";
+const LITERAL = { computer: "комп'ю́тер", sport: "спорт", film: "фільм", "e-mail": "і-ме́йл", stasera: "стасе́ра", bar: "бар", con: "кон", per: "пер", non: "нон", in: "ін", un: "ун", del: "дель", al: "аль", il: "іль", nel: "нель", sul: "суль", dal: "даль", qual: "куаль", "c'è": "че", trentasette: "трентасе́тте", stress: "стрес", tunnel: "ту́ннель", transpallet: "транспа́ллет", gas: "газ", "idoneità": "ідонеіта́", "inidoneità": "інідонеіта́" };
+
+const VOW = "aeiouàèéìòóù";
+const isV = c => !!c && VOW.includes(c);
+const baseV = c => ({ "à": "a", "è": "e", "é": "e", "ì": "i", "ò": "o", "ó": "o", "ù": "u" }[c] || c);
+const isAcc = c => "àèéìòóù".includes(c);
+const UKV = { a: "а", e: "е", i: "і", o: "о", u: "у" };
+const SOFT = { a: "я", e: "є", i: "ї", o: "о", u: "ю" };
+const IOT = { a: "я", e: "є", i: "ї", o: "йо", u: "ю" };
+const CONS = { b: "б", d: "д", f: "ф", l: "л", m: "м", n: "н", p: "п", r: "р", t: "т", v: "в", k: "к", w: "в", x: "кс", j: "й", y: "і" };
+
+function trWord(w) {
+  w = w.replace(/issim([oaie])$/, "ìssim$1");
+  const segs = []; let soften = false;
+  const push = (s, nuc, acc) => segs.push({ s, nuc: !!nuc, acc: !!acc });
+  const softAhead = (i, ch) => { let j = i; while (w[j] === ch) j++; return "eièéì".includes(w[j] || "x"); };
+  for (let i = 0; i < w.length;) {
+    const c = w[i], n1 = w[i + 1], n2 = w[i + 2], n3 = w[i + 3];
+    if (c === "'" || c === "’" || c === "-") { push(c === "-" ? "-" : "'"); i++; continue; }
+    if (isV(c)) {
+      const b = baseV(c), a = isAcc(c), prev = segs[segs.length - 1];
+      if (soften) { push(SOFT[b], true, a); soften = false; i++; continue; }
+      if (b === "i" && !a) {
+        if (isV(n1)) {
+          const v = baseV(n1); let s;
+          if (!prev || prev.nuc || prev.s === "'" || prev.glide) s = IOT[v];
+          else if ("тднлсзц".includes(prev.s.slice(-1))) s = "ь" + SOFT[v];
+          else s = "'" + IOT[v];
+          push(s, true, isAcc(n1)); i += 2; continue;
+        }
+        if (prev && prev.nuc) { push("й"); i++; continue; }
+        push("і", true); i++; continue;
+      }
+      if (b === "u" && !a) {
+        if (isV(n1) || (prev && prev.nuc)) { push("у"); segs[segs.length - 1].glide = true; i++; continue; }
+        push("у", true); i++; continue;
+      }
+      push(UKV[b], true, a); i++; continue;
+    }
+    if (c === "s") {
+      if (n1 === "c" && "eièéì".includes(n2 || "x")) {
+        push("ш"); i += (n2 === "i" && isV(n3)) ? 3 : 2; continue;
+      }
+      if ("bdglmnrv".includes(n1 || "x")) push("з");
+      else if (isV(w[i - 1]) && isV(n1)) push("з");
+      else push("с");
+      i++; continue;
+    }
+    if (c === "c") {
+      if (n1 === "h") { push("к"); i += 2; continue; }
+      if (n1 === "c") { push(softAhead(i, "c") ? "ч" : "к"); i++; continue; }
+      if ("eèéì".includes(n1 || "x")) { push("ч"); i++; continue; }
+      if (n1 === "i") { push("ч"); i += isV(n2) ? 2 : 1; continue; }
+      push("к"); i++; continue;
+    }
+    if (c === "g") {
+      if (n1 === "h") { push("г"); i += 2; continue; }
+      if (n1 === "l" && n2 === "i") {
+        push("ль");
+        if (isV(n3)) soften = true; else push("ї", true);
+        i += 3; continue;
+      }
+      if (n1 === "n") { push("нь"); if (isV(n2)) soften = true; i += 2; continue; }
+      if (n1 === "g") { if (!softAhead(i, "g")) push("г"); i++; continue; }
+      if ("eèéì".includes(n1 || "x")) { push("дж"); i++; continue; }
+      if (n1 === "i") { push("дж"); i += isV(n2) ? 2 : 1; continue; }
+      push("г"); i++; continue;
+    }
+    if (c === "q") { push("к"); i++; continue; }
+    if (c === "h") { i++; continue; }
+    if (c === "z") { push(i === 0 ? "дз" : "ц"); i++; continue; }
+    if (c === "l" && n1 !== "l" && n1 !== "'" && !isV(n1)) { push("ль"); i++; continue; }
+    push(CONS[c] || c); i++;
+  }
+  const nucs = segs.filter(s => s.nuc);
+  if (nucs.length >= 2) {
+    const t = nucs.find(s => s.acc) || nucs[nucs.length - 2];
+    t.s += "́";
+  }
+  return segs.map(s => s.s).join("");
+}
+
+function translit(text) {
+  return text.split(/\s+/).map(tok => {
+    const m = tok.match(/^([^\p{L}]*)(.*?)([^\p{L}]*)$/u);
+    const core = m[2].toLowerCase().replace(/’/g, "'");
+    if (!core) return tok;
+    if (LITERAL[core]) return m[1] + LITERAL[core] + m[3];
+    const parts = core.split("'");
+    const last = parts[parts.length - 1];
+    if (parts.length > 1 && LITERAL[last] && last.length > 3)
+      return m[1] + parts.slice(0, -1).map(p => trWord(p).replace(/ь$/, "")).join("'") + "'" + LITERAL[last] + m[3];
+    return m[1] + trWord(parts.map(p => STRESS[p] || p).join("'")) + m[3];
+  }).join(" ");
+}
+
+const TOPICS = RAW.map(([name, src, body]) => ({
+  name, src,
+  items: body.trim().split("\n").map(l => {
+    const k = l.indexOf(" = ");
+    const it = l.slice(0, k).trim();
+    return { it, uk: l.slice(k + 3).trim(), tr: translit(it) };
+  })
+}));
+if (typeof module !== "undefined") module.exports = { TOPICS, translit };
+
+</script>
+<script>
+(function(){
+const $ = id => document.getElementById(id);
+const synth = window.speechSynthesis || null;
+const S = { topic:0, track:0, reps:2, rate:0.9, seq:"sand", gap:"short", ukVoice:true, hide:false, after:"loop", tr:true, shuffle:false, voice:"" };
+try { Object.assign(S, JSON.parse(localStorage.getItem("it-na-slukh") || "{}")); } catch (e) {}
+if (!TOPICS[S.topic]) S.topic = 0;
+if (![0.6, 0.75, 0.9, 1, 1.2].includes(S.rate)) S.rate = 0.9;
+const save = () => { try { localStorage.setItem("it-na-slukh", JSON.stringify(S)); } catch (e) {} };
+
+let order = [], token = 0, playing = false, steps = [], phase = -1, revealed = false, keep = null, lock = null;
+let itVoices = [], itVoice = null, ukVoice = null, voicesKnown = false;
+
+const PACKS = {"0":{"f":"s00.mp3","it":[6739,7210,8463,8307,9247,7680,11598,7053,11285,9717,10658,10814,13009,9404,10344,10501,11441,11285,10501,8463,7836,8934,11598,14106],"uk":[5956,7523,8620,10344,6896,7210,13009,6739,11598,10501,9874,8150,12695,11128,9717,11128,7836,8463,8307,7053,6269,8307,11598,14419]},"1":{"f":"s01.mp3","it":[7680,8463,7680,7523,7366,9090,9404,8934,7210,7053,7366,7523,9247,9090,8777,6426,8463,11285,12068,11912,10658,11912,10501,10658,9247,9717,11441,11285,13636,17554],"uk":[5956,6426,5799,7210,7366,5956,5956,7366,5642,7053,7053,7366,7523,8150,8307,4232,4702,8463,8620,11285,7993,9874,8150,10814,8777,9247,10344,9874,14263,21002]},"2":{"f":"s02.mp3","it":[9561,9561,8150,8307,8463,9090,8620,9090,9717,10031,9874,9090,7680,8777,7680,8307,8463,8307,8463,9404,9090,7836,7836,9090,8463,7680,8463,10031,9090,9090,10658,7993,8307,8777,8307,9717,7836,8620,8307,7680,10188,9874,9404,7053,7680],"uk":[11755,8463,6739,6739,9717,7210,7836,9874,6426,7366,7523,7366,6112,6583,6739,6896,9247,5329,8307,7993,6739,6583,7680,7053,7053,5485,5799,9561,5956,8307,7680,6112,6583,6896,5329,7366,6583,5485,6739,7053,6896,6583,5956,7993,5485]},"3":{"f":"s03.mp3","it":[6583,6426,6269,7523,7523,6426,7366,7053,7053,7993,8463,8463,8463,9874,8934,8463,9717,8777,9090,7366,8620,8934,10344,8934,7680,9874,8463,10501,9404,10031,8934,11128,8934,8463,8620,7836,7523],"uk":[5956,5799,4388,6739,5956,7993,4702,7053,7210,7210,8307,7993,7680,8934,8150,7993,7836,9404,9874,6896,9874,10344,9404,9874,6896,8307,5956,9090,7680,8934,7523,10814,7523,9247,8620,4859,7053]},"4":{"f":"s04.mp3","it":[10031,10501,8777,7993,10658,11912,13636,17397,15046,16927,16143,18965,9404,8934,9404,14733,7680,9717,9404,10344],"uk":[10031,9874,11441,8934,7993,7993,13322,16457,13636,16770,14419,18181,9090,7836,8934,13636,8777,7836,7366,10658]},"5":{"f":"s05.mp3","it":[8620,9717,9874,10814,9874,10814,10031,8777,7680,6739,12695,13479,10971,13636,14419,12539,16927,16143,14263,10814,16143,15516,12695,13636,15516],"uk":[8934,8777,9090,10814,10344,7210,6583,11441,6896,8307,8150,7836,10031,10971,9404,8620,9874,9874,11285,14106,13165,13636,12382,14106,17711]},"6":{"f":"s06.mp3","it":[7680,6896,7836,8934,9561,7993,9090,10344,8150,8463,8777,9717,10971,12695,11598,8150,7210,8934,10501,9874,10344,9247,7366,7680,9404,8463,6583,7680,7680,6269,6739,7210,8463,10188,10658,12695,8463,8463,8934,8777,8777],"uk":[7210,10344,6739,10501,9561,11285,6269,11128,7210,5799,6112,6739,7993,10344,7210,9404,5799,7680,10188,6269,6739,7836,9874,5956,8150,7210,6426,9090,5956,5642,6269,5799,5956,9717,8307,13479,6112,7053,5642,6739,5799]},"7":{"f":"s07.mp3","it":[7836,8934,8463,8463,8463,8307,8463,9717,9090,8620,8620,8463,8150,8463,7053,8463,7993,7993,8463,7993,8620,8307,8934,9404,7836,7836,7993,7680,8463,7836,7366,8777,8150,7993,8307,8463,8463,7836,7836,7836,7680],"uk":[7993,10031,12068,7210,9717,7836,10031,6739,6426,7366,12382,7523,7523,6896,6426,8620,8307,7523,9090,6739,6112,7366,8463,8150,15830,10814,7053,7836,7993,6739,6112,7366,5799,7680,15516,12382,13636,7210,7366,8307,12382]},"8":{"f":"s08.mp3","it":[9717,9090,9874,10501,10501,10344,9090,8777,9090,10031,9874,9874,8777,8463,8934,9874,9874,9561,14419,16927,12852,16770,15987,16143,15203,15360,12068,14576,16927,13322,11912,14576,16143,14263,16300,15516,15516,13165],"uk":[8463,7993,8620,8620,8777,9874,7053,7053,7993,7523,8150,11441,7523,7210,9874,8150,8620,9090,12225,16614,11285,16300,16770,14106,18024,13009,18338,12852,15360,10501,10658,14419,13322,13165,14263,16770,13165,10344]},"9":{"f":"s09.mp3","it":[7680,8150,7680,7680,9561,9404,9090,7680,8463,8463,8620,9404,9247,9717,7053,9090,7993,7680,10031,9090,9090,17241,16457,17868,17084,16614,13322,19121,11912,11755],"uk":[9874,7053,6739,8620,7993,8620,8463,7366,9247,8150,9404,8934,9090,9874,6739,7523,7210,7523,7836,8150,9247,17868,17711,15673,18651,17554,13009,21002,12068,13165]},"10":{"f":"s10.mp3","it":[7680,8620,8150,8463,9247,9717,9717,6739,8150,7993,8307,9561,9561,9717,7366,7680,7993,7993,9247,9247,9404,7836,9874,9404,9874,9717,9561,10658,13636,14576,16300,20062],"uk":[7993,9090,7993,8777,8463,9561,9247,5329,7366,7523,7836,7210,7836,9404,19278,15360,5329,7210,5799,6896,7680,8463,9090,8777,9247,9090,8777,10188,13636,17397,20219,20375]},"11":{"f":"s11.mp3","it":[9090,9090,8463,9247,9561,9874,8777,10814,9404,9090,9090,9247,10658,10501,10344,12068,10814,14263,13479,15673,18808,10031,12695,13165,16457,17554,14733,13636,14263,17241,10501,15203],"uk":[15516,8620,7366,9247,10658,8150,9090,7993,8934,8620,8463,8620,8934,9404,9874,14263,10188,12695,18808,14263,20689,12068,15046,13165,16143,14106,15830,13792,11755,16143,9404,14733]},"12":{"f":"s12.mp3","it":[9090,9717,9247,9090,9874,10188,9561,9717,9247,10501,10501,10344,11912,11285,11128,11285,11285,11755,11128,12382,12695,10971,9874,10501,11441,12382,11755,14263,13636,15673,12852,18181,15516],"uk":[8620,9247,7366,9561,12382,8463,8934,8150,9561,8620,7993,9247,7836,15203,10031,9090,9561,8934,8934,11598,9874,9404,8934,10658,8777,9561,10344,17241,8150,14576,11128,13949,11755]},"13":{"f":"s13.mp3","it":[8463,10188,10814,9090,8620,8307,7993,9561,9090,9717,8307,8463,7993,8620,8150,7680,9090,9404,9874,9561,8150,9404,7523,11598,8307,7210,8150,7836,8307,8934,15046,11912,14890,15673],"uk":[6583,7210,6739,5642,7210,7210,8150,10031,16927,6896,7053,6739,6112,8463,5642,7836,5485,7680,5642,7523,5172,6112,5799,9404,7210,5799,6896,5956,5172,6426,15516,13165,17241,14890]},"14":{"f":"s14.mp3","it":[8307,10501,8934,8463,9247,9090,9561,8620,9561,7836,9090,8150,8620,8777,9090,9561,9874,9090,8620,9561,9090,10971,12695,14419,14733,14106,14419],"uk":[4859,7210,6426,10031,5956,7210,5172,6896,6269,13636,5172,6739,5799,5642,7366,7366,9717,16770,6896,7523,6739,8150,8620,9404,13322,9874,17868]},"15":{"f":"s15.mp3","it":[9404,9090,9404,8777,9874,10031,8934,9090,8463,8934,10344,9090,8620,8620,9561,9090,9561,8150,8934,10658,9561,15046,13792,12225],"uk":[7210,8463,7366,6269,6739,7523,8307,7993,6112,7836,8307,6739,7210,7053,5956,7680,7366,8307,7053,9247,7053,11128,10658,9404]},"16":{"f":"s16.mp3","it":[9404,9561,9404,9090,9090,7680,7680,8777,9874,8307,8150,10031,9090,9090,8463,8307,8150,8463,9090,9090,9717,10344,10031,8934,8934,9404,10031,9090,12852,13165],"uk":[6896,8150,7366,10031,7680,5485,6739,6426,6583,5485,5642,6112,7210,6583,6583,11441,7523,6583,6739,8150,6426,7210,7523,6896,6426,7366,7523,7680,14106,13636]},"17":{"f":"s17.mp3","it":[8463,9090,9090,8307,10031,8620,8463,11285,9561,10031,9090,10501,8307,10344,9090,8620,8620,9247,9717,10188,8620,7680,9404,7993,10031,8463,8620,9090,9561,10344,13479,14419,12382,18494],"uk":[6739,6269,9247,5799,8934,6426,7053,8463,6269,6896,7523,8463,5956,7366,11128,7366,5485,7210,11755,6583,10501,6112,5799,6269,6896,6112,7523,6739,8150,7993,12695,13636,10501,17711]},"18":{"f":"s18.mp3","it":[6112,7053,5642,6426,6112,6583,6269,6426,10501,11598,11441,10658,11128,10501,11441,12225,14419,10814,11755,12382,11755,12068,13479,12382,12695,12852,12539,14106,14106,12695,12382,12068,14106,16770,19905,18494],"uk":[11441,10501,11441,5642,8620,4232,5485,9090,11598,8777,10971,11128,15046,9717,10814,10501,17554,10344,11128,11755,11441,9404,13949,11128,9404,11128,11128,13792,13322,13792,12225,10971,14733,17868,22570,21472]},"19":{"f":"s19.mp3","it":[7680,7836,7523,7366,7993,7366,8150,7680,7836,7053,8150,9090,8463,8463,7366,7523,7680,8307,7680,9247,8777,7523,9090,9561,8307,8463,10658,9874,10814,6896,6896,10188,9874,14733],"uk":[7993,6896,7523,6739,10971,17397,7366,7053,6739,7053,10501,7053,7836,6896,14576,7210,8150,7680,6896,15830,13636,6896,7680,10031,7836,8150,6896,7836,7680,6426,6583,7836,7523,15046]},"20":{"f":"s20.mp3","it":[6896,6739,14106,15987,17241,15987,18024,16614,14419,16143,16143,20219,14890,16770,16614,14576,16927,18651,18338,12382,13479,9404,9247,10501,9874,9561,14106,12382,13165],"uk":[7523,7210,11755,13009,14576,16927,17084,21472,16770,18808,14263,21316,12539,11755,13009,16927,16457,12225,16457,10188,14733,9090,9717,10188,8777,9404,12382,10971,10501]},"21":{"f":"s21.mp3","it":[14263,17554,15046,10501,14106,11128,16927,17554,15673,18181,16300,16457,16300,19592,17554,19592,22726,20845,17397,18181,16143,19121,15673,18338,18024,17554,18181,14576,17241,16300,19592],"uk":[11755,15673,14106,10344,12539,10501,16614,17084,16614,17554,20219,16143,14106,20532,15830,16143,23667,21159,16457,18181,15046,21159,13479,19121,17397,17868,21786,12382,15673,13792,22413]},"22":{"f":"s22.mp3","it":[9404,8777,9404,9874,10501,10501,8463,7680,8307,9404,9874,8934,9874,18024,21472,16457,15673,17554,18024,15673,14106,14890,15987,15673],"uk":[9090,7993,8463,8307,9090,10188,7366,5956,7523,7210,7366,8620,7993,18494,22256,19278,13949,20532,16457,18494,16143,12382,14419,20375]},"23":{"f":"s23.mp3","it":[9247,9717,9561,10188,10501,10814,12539,13636,14733,10501,15360,16614,17241,16770,17241,19435,13009,20845,15046,19278,18965,16457,14733,18181],"uk":[8307,8777,8307,8934,8620,9717,12382,16770,15516,10658,21159,16614,16300,16927,15046,21159,12382,18494,19748,23823,20532,14576,12225,16457]},"24":{"f":"s24.mp3","it":[10344,10501,9874,10501,16143,22726,14263,16457,15987,18494,14890,17554,16927,20845,11912,22413,20375,20689],"uk":[9404,10814,11912,12539,14890,21786,13479,12852,14733,16614,14576,10971,15046,23980,10501,19121,21316,19905]},"25":{"f":"s25.mp3","it":[7680,9090,9404,9561,8463,8150,6896,7993,10188,9874,11128,13165,9404,11598,10188,8777,9874,11285,8934,11912,15203,10344,13322,11598,14263,16457],"uk":[9404,10814,6583,7210,9561,6583,5956,8777,8463,7210,11285,14263,10501,9874,10031,7680,8777,9717,9561,9247,13792,6112,10658,6739,14263,23510]},"26":{"f":"s26.mp3","it":[12068,10501,9874,10344,10188,20845,18808,15987,8620,13009,13792,13792,12225,10501,9717,9247,9874,9090,13636,8934,8777,9874,8777,10501,8777,9247,8777,8777,8620,10188,9247,12382,19592,21943],"uk":[10031,6739,13949,7993,8620,16457,17554,12539,12382,10814,10031,11128,8620,8620,7523,8620,7366,16927,9404,5485,7836,7366,8150,7680,7210,7523,7993,9247,12852,7523,12225,11128,21786,16614]},"27":{"f":"s27.mp3","it":[13165,9561,10031,9404,9090,8307,10344,10188,10188,14106,18181,10814,10344,13792,14419,10971,10501,10031,9874,9874,13009,12852,12852,9874,14106,11755,8620,9247,8307,9090,9090,9247,14733,8463,8777,10971,9874,12852,8620,10658,10031,11441,17397,20062],"uk":[10188,7993,7836,8150,6739,6112,9090,8620,7053,11128,14890,9247,7993,11128,12695,10814,10031,9717,10501,10658,15046,16770,21629,8463,12695,12382,6896,6896,6269,6739,7366,7680,13949,6269,7366,6426,15673,10031,6583,9247,9247,9247,25391,21002]},"28":{"f":"s28.mp3","it":[14106,11441,14890,14733,16457,12695,13322,13322,13322,13165,11285,17711,9090,13165,8307,8934,15360,14419,12068,8620,8150,8463,9090,14106,11285,13009,12382,9247,11912,10971,11128,11441,11128,10501,10501,8463,10501],"uk":[10031,10971,10814,11441,14733,11912,13479,12539,12382,10814,16143,14890,7210,11912,5799,7680,15516,13009,11755,5799,5799,5642,6426,11128,9247,12539,11598,7680,11285,9247,12539,11598,9247,13009,9874,5329,8934]},"29":{"f":"s29.mp3","it":[12695,7993,8463,8463,11285,9874,10971,9561,17554,9090,17868,11441,9404,12382,13479,11285,14733,10501,8620,12695,9404,9874,9247,9090,8463,9561,8620,13949,10658,19592,8463,8463,10501,12068,9561],"uk":[10814,5956,10658,7523,15830,7993,8150,6269,20532,8934,22099,17554,7680,10971,10031,10344,15830,7836,6112,19121,7836,8150,7523,6896,8463,8620,7366,13322,8620,16457,6426,7993,10501,9404,6739]},"30":{"f":"s30.mp3","it":[14890,9717,9090,11441,11912,11912,9404,8777,7680,7523,8620,7523,9874,9404,9404,14106,14106,14576,15046,18338,10188,13322,10344,10188,13165,12539,16143,15830,11912,9247,8620,8620,8150,8620,10971,10188,8620,9404,13792,12852,13479,10971,9874,8620,9561,12225,10971,13479,13792],"uk":[9874,7366,11755,9874,10188,15516,7366,7993,7993,7053,7993,7366,7210,5799,6269,16300,11598,14263,21159,20845,12539,22570,9247,11441,10031,8463,12539,15046,9247,6739,6739,7210,5485,6583,10814,7053,10814,6426,12695,10031,11128,10188,7366,7053,12382,10344,8463,11912,14576]}};
+const packCache = {};
+const player = new Audio(); player.preload = "auto";
+let unlocked = false;
+const hasPack = () => !!PACKS[S.topic];
+async function loadPack(ti){
+  const p = PACKS[ti]; if (!p) return null;
+  if (packCache[ti]) return packCache[ti];
+  try {
+    const r = await fetch(p.f); if (!r.ok) throw new Error("no file");
+    const buf = await r.arrayBuffer(); let off = 0;
+    const mk = l => { const u = URL.createObjectURL(new Blob([buf.slice(off, off + l)], { type:"audio/mpeg" })); off += l; return u; };
+    packCache[ti] = { it: p.it.map(mk), uk: p.uk.map(mk) };
+  } catch (e) { PACKS[ti] = null; return null; }
+  return packCache[ti];
+}
+function unlock(){
+  if (unlocked) return; unlocked = true;
+  try {
+    const n = 2205, b = new ArrayBuffer(44 + n * 2), v = new DataView(b), w = (o, t) => [...t].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+    w(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); w(8, "WAVEfmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, 22050, true); v.setUint32(28, 44100, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, "data"); v.setUint32(40, n * 2, true);
+    player.src = URL.createObjectURL(new Blob([b], { type:"audio/wav" })); player.play().catch(() => {});
+  } catch (e) {}
+}
+function playClip(url, rate){
+  return new Promise(res => {
+    let done = false;
+    const fin = () => { if (done) return; done = true; clearTimeout(t); player.onended = player.onerror = null; res(); };
+    const t = setTimeout(fin, 25000);
+    player.onended = fin; player.onerror = fin;
+    player.src = url; player.defaultPlaybackRate = rate; player.playbackRate = rate;
+    try { player.preservesPitch = true; } catch (e) {}
+    player.play().catch(fin);
+  });
+}
+const topic = () => TOPICS[S.topic];
+const item = () => topic().items[order[S.track]];
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const clean = s => s.replace(/\s*\([^)]*\)/g, "");
+
+function buildOrder(){
+  order = topic().items.map((_, i) => i);
+  if (S.shuffle) for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+  if (S.track >= order.length) S.track = 0;
+}
+const canUk = () => S.ukVoice && (hasPack() || (!!synth && (!voicesKnown || !!ukVoice)));
+function buildSteps(){
+  const a = [], gap = S.gap !== "off";
+  const its = () => { for (let k = 0; k < S.reps; k++) { a.push({ t:"it", label: S.reps > 1 ? "італійською " + (k + 1) : "італійською" }); if (gap) a.push({ t:"gap", label:"повторіть" }); } };
+  const uk = { t:"uk", label: canUk() ? "переклад" : "переклад на екрані" };
+  if (S.seq === "sand") {
+    a.push({ t:"it", label:"італійською" }, uk);
+    const n = Math.max(1, S.reps - 1);
+    for (let k = 0; k < n; k++) { a.push({ t:"it", label:"ще раз італійською" }); if (gap) a.push({ t:"gap", label:"повторіть" }); }
+    if (S.reps === 1) a.splice(2, 1);
+  }
+  else if (S.seq === "it") { its(); a.push(uk); } else { a.push(uk); if (gap) a.push({ t:"think", label:"згадайте" }); its(); }
+  return a;
+}
+
+function pickVoices(){
+  const vs = synth ? synth.getVoices() : [];
+  voicesKnown = vs.length > 0;
+  const score = v => (/natural|neural|premium|enhanced|google/i.test(v.name) ? 2 : 0) + (/it[-_]IT|uk[-_]UA/i.test(v.lang) ? 1 : 0);
+  const best = l => l.slice().sort((a, b) => score(b) - score(a))[0] || null;
+  itVoices = vs.filter(v => /^it/i.test(v.lang));
+  itVoice = itVoices.find(v => v.name === S.voice) || best(itVoices);
+  ukVoice = best(vs.filter(v => /^uk/i.test(v.lang)));
+  const sel = $("voiceSel"); sel.textContent = "";
+  itVoices.forEach(v => { const o = document.createElement("option"); o.value = v.name; o.textContent = v.name; if (v === itVoice) o.selected = true; sel.appendChild(o); });
+  $("voiceRow").hidden = itVoices.length < 2;
+  const note = $("voiceNote"); note.className = "note";
+  if (!synth) { note.textContent = "Цей браузер не вміє озвучувати текст. Слова й переклад показуються на екрані з паузами."; note.className = "note warn"; }
+  else if (voicesKnown && !itVoice) { note.textContent = "На пристрої не знайдено італійського голосу. Додайте італійську в налаштуваннях мовлення системи, інакше вимова буде неточною."; note.className = "note warn"; }
+  else if (voicesKnown && !ukVoice) note.textContent = "Українського голосу на цьому пристрої немає, тому переклад з'являється на екрані без озвучення.";
+  else note.textContent = "";
+  if (hasPack()) { note.className = "note"; note.textContent = "Ця тема має записаний звук: італійська й переклад звучать однаково на будь-якому пристрої."; }
+  $("voiceSum").textContent = itVoice ? "· голос " + itVoice.name.replace(/\s*\(.*$/, "") : "";
+  if (!playing) show();
+}
+
+function speak(text, lang){
+  return new Promise(res => {
+    const est = Math.max(1200, text.length * 95);
+    if (!synth) return setTimeout(res, est);
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang === "it" ? "it-IT" : "uk-UA";
+    const v = lang === "it" ? itVoice : ukVoice; if (v) u.voice = v;
+    u.rate = lang === "it" ? S.rate : 1;
+    let done = false;
+    const fin = () => { if (done) return; done = true; clearTimeout(t); res(); };
+    u.onend = fin; u.onerror = fin;
+    const t = setTimeout(fin, 4000 + est * 2 / u.rate);
+    keep = u;
+    try { synth.resume(); synth.speak(u); } catch (e) { fin(); }
+  });
+}
+
+async function playOne(my){
+  const it = item(), ix = order[S.track];
+  const pack = await loadPack(S.topic);
+  if (my !== token) return;
+  steps = buildSteps(); revealed = false; phase = -1; show();
+  const gapMs = Math.max(1300, it.it.length * 85) * (S.gap === "long" ? 2 : 1);
+  for (let k = 0; k < steps.length; k++) {
+    if (my !== token) return;
+    phase = k; const st = steps[k];
+    if (st.t === "it") { if (S.seq === "uk") revealed = true; paint(); if (pack) await playClip(pack.it[ix], S.rate); else await speak(it.it, "it"); await wait(250); }
+    else if (st.t === "uk") {
+      if (S.seq !== "uk") revealed = true; paint();
+      if (canUk() && pack) await playClip(pack.uk[ix], 1); else if (canUk()) await speak(clean(it.uk), "uk"); else await wait(Math.max(1500, it.uk.length * 80));
+      await wait(250);
+    }
+    else { paint(); await wait(gapMs); }
+  }
+  if (my === token) await wait(450);
+}
+
+function advance(){
+  if (S.track < order.length - 1) S.track++;
+  else if (S.after === "loop") { S.track = 0; if (S.shuffle) { buildOrder(); renderList(); } }
+  else if (S.after === "next") { S.topic = (S.topic + 1) % TOPICS.length; S.track = 0; buildOrder(); renderTopics(); renderList(); }
+  else return false;
+  save(); return true;
+}
+
+async function run(){
+  const my = ++token; playing = true;
+  unlock(); player.pause();
+  if (synth) { synth.cancel(); await wait(90); }
+  if (my !== token) return;
+  try { if (navigator.wakeLock && !lock) { lock = await navigator.wakeLock.request("screen"); lock.addEventListener("release", () => { lock = null; }); } } catch (e) {}
+  paint();
+  while (my === token) {
+    await playOne(my);
+    if (my !== token) return;
+    if (!advance()) { stop(); return; }
+  }
+}
+function stop(){
+  token++; playing = false; phase = -1;
+  player.pause();
+  if (synth) synth.cancel();
+  try { if (lock) lock.release(); } catch (e) {}
+  paint();
+}
+function jump(i){
+  S.track = (i + order.length) % order.length; save();
+  if (playing) run(); else { steps = buildSteps(); revealed = false; show(); }
+}
+
+function show(){
+  const it = item(), t = topic();
+  $("topicName").textContent = t.name;
+  $("pos").textContent = (S.track + 1) + " / " + order.length;
+  $("it").textContent = it.it; $("it").classList.toggle("long", it.it.length > 26);
+  $("tr").textContent = "[ " + it.tr + " ]"; $("tr").hidden = !S.tr;
+  $("uk").textContent = it.uk;
+  $("fill").style.width = ((S.track + 1) / order.length * 100) + "%";
+  if (!steps.length) steps = buildSteps();
+  const ph = $("phases"); ph.textContent = "";
+  steps.forEach(s => { const e = document.createElement("span"); e.textContent = s.label; ph.appendChild(e); });
+  document.querySelectorAll("#list li").forEach((li, i) => {
+    const cur = i === S.track;
+    if (cur) li.setAttribute("aria-current", "true"); else li.removeAttribute("aria-current");
+    if (cur && playing) { const box = li.getBoundingClientRect(); if (box.top < 0 || box.bottom > innerHeight) li.scrollIntoView({ block:"center" }); }
+  });
+  paint();
+}
+function paint(){
+  const hideA = S.hide && !revealed;
+  $("uk").classList.toggle("veil", hideA && S.seq !== "uk");
+  $("it").classList.toggle("veil", hideA && S.seq === "uk");
+  $("tr").classList.toggle("veil", hideA && S.seq === "uk");
+  [...$("phases").children].forEach((e, i) => e.classList.toggle("on", playing && i === phase));
+  $("playIcon").innerHTML = playing ? '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>' : '<path d="M7 4v16l13-8z"/>';
+  $("play").setAttribute("aria-label", playing ? "Пауза" : "Слухати");
+  $("shuf").setAttribute("aria-pressed", String(S.shuffle));
+  $("shuf").style.background = S.shuffle ? "var(--soft)" : "";
+  $("shuf").style.borderColor = S.shuffle ? "var(--accent)" : "";
+}
+function renderTopics(){
+  const box = $("topics"); box.textContent = "";
+  TOPICS.forEach((t, i) => {
+    const b = document.createElement("button"); b.type = "button";
+    const n = document.createElement("b"); n.textContent = t.name;
+    const s = document.createElement("small"); s.textContent = t.items.length + " · " + t.src;
+    b.append(n, s);
+    if (i === S.topic) b.setAttribute("aria-current", "true");
+    b.onclick = () => { S.topic = i; S.track = 0; buildOrder(); save(); renderTopics(); renderList(); $("topicsBox").open = false; steps = []; pickVoices(); if (playing) run(); else show(); };
+    box.appendChild(b);
+  });
+  $("topicSum").textContent = topic().name + " · " + topic().items.length;
+}
+function renderList(){
+  const ol = $("list"); ol.textContent = "";
+  $("listTitle").textContent = "Доріжка · " + topic().name;
+  order.forEach((idx, pos) => {
+    const x = topic().items[idx];
+    const li = document.createElement("li"), b = document.createElement("button"); b.type = "button";
+    const n = document.createElement("span"); n.className = "n"; n.textContent = pos + 1;
+    const a = document.createElement("span"); a.className = "a"; a.lang = "it"; a.textContent = x.it;
+    const u = document.createElement("span"); u.className = "b"; u.textContent = x.uk;
+    b.append(n, a, u); b.onclick = () => { S.track = pos; save(); run(); };
+    li.appendChild(b); ol.appendChild(li);
+  });
+}
+function syncSegs(){
+  document.querySelectorAll(".seg").forEach(seg => {
+    seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(String(S[seg.dataset.key]) === b.dataset.v)));
+  });
+}
+document.querySelectorAll(".seg").forEach(seg => seg.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const k = seg.dataset.key, v = b.dataset.v;
+  S[k] = v === "true" ? true : v === "false" ? false : isNaN(+v) ? v : +v;
+  save(); syncSegs();
+  if (k === "rate" && !player.paused && steps[phase] && steps[phase].t === "it") { try { player.playbackRate = S.rate; } catch (e) {} }
+  if (!playing) { steps = buildSteps(); revealed = false; show(); } else paint();
+}));
+$("play").onclick = () => playing ? stop() : run();
+$("again").onclick = () => run();
+$("prev").onclick = () => jump(S.track - 1);
+$("next").onclick = () => jump(S.track + 1);
+$("shuf").onclick = () => { S.shuffle = !S.shuffle; S.track = 0; buildOrder(); save(); renderList(); steps = []; if (playing) run(); else show(); };
+$("card").onclick = () => { if (S.hide && !revealed) { revealed = true; paint(); } };
+$("voiceSel").onchange = e => { S.voice = e.target.value; save(); pickVoices(); };
+document.addEventListener("visibilitychange", () => { if (document.hidden && playing) stop(); });
+
+buildOrder(); syncSegs(); renderTopics(); renderList(); show(); pickVoices();
+if (synth) { if ("onvoiceschanged" in synth) synth.onvoiceschanged = pickVoices; setTimeout(pickVoices, 600); }
+})();
+</script>
+</body>
+</html>
