@@ -163,6 +163,7 @@ ol li[aria-current="true"] .n{color:var(--live);font-weight:700}
       <div class="opt"><span>Самоперевірка</span><div class="seg" data-key="hide"><button data-v="false">усе видно</button><button data-v="true">ховати відповідь</button></div></div>
       <div class="opt"><span>Коли тема скінчилась</span><div class="seg" data-key="after"><button data-v="loop">повторити</button><button data-v="next">наступна тема</button><button data-v="stop">зупинитись</button></div></div>
       <div class="opt"><span>Вимова літерами</span><div class="seg" data-key="tr"><button data-v="true">показувати</button><button data-v="false">сховати</button></div></div>
+      <div class="opt"><span>Оформлення</span><div class="seg" data-key="theme"><button data-v="auto">як у системі</button><button data-v="light">світле</button><button data-v="dark">темне</button></div></div>
       <div class="opt" id="voiceRow" hidden><label for="voiceSel"><span>Італійський голос</span></label><select id="voiceSel"></select></div>
       <p class="note" id="voiceNote"></p>
       <p class="note">Звук іде через голос вашого пристрою, тому екран має лишатися ввімкненим: із заблокованим телефоном програвання зупиниться.</p>
@@ -1388,10 +1389,17 @@ if (typeof module !== "undefined") module.exports = { TOPICS, translit };
 (function(){
 const $ = id => document.getElementById(id);
 const synth = window.speechSynthesis || null;
-const S = { topic:0, track:0, reps:2, rate:0.9, seq:"sand", gap:"short", ukVoice:true, hide:false, after:"loop", tr:true, shuffle:false, voice:"" };
+const S = { topic:0, track:0, reps:2, rate:0.9, seq:"sand", gap:"short", ukVoice:true, hide:false, after:"loop", tr:true, shuffle:false, voice:"", theme:"auto" };
 try { Object.assign(S, JSON.parse(localStorage.getItem("it-na-slukh") || "{}")); } catch (e) {}
 if (!TOPICS[S.topic]) S.topic = 0;
 if (![0.6, 0.75, 0.9, 1, 1.2].includes(S.rate)) S.rate = 0.9;
+function applyTheme(){
+  const r = document.documentElement;
+  if (S.theme === "light" || S.theme === "dark") r.setAttribute("data-theme", S.theme);
+  else if (themeSet) r.removeAttribute("data-theme");
+  themeSet = themeSet || S.theme !== "auto";
+}
+let themeSet = false;
 const save = () => { try { localStorage.setItem("it-na-slukh", JSON.stringify(S)); } catch (e) {} };
 
 let order = [], token = 0, playing = false, steps = [], phase = -1, revealed = false, keep = null, lock = null;
@@ -1644,6 +1652,7 @@ document.querySelectorAll(".seg").forEach(seg => seg.addEventListener("click", e
   const k = seg.dataset.key, v = b.dataset.v;
   S[k] = v === "true" ? true : v === "false" ? false : isNaN(+v) ? v : +v;
   save(); syncSegs();
+  if (k === "theme") applyTheme();
   if (k === "rate" && !player.paused && steps[phase] && steps[phase].t === "it") { try { player.playbackRate = S.rate; } catch (e) {} }
   if (!playing) { steps = buildSteps(); revealed = false; show(); } else paint();
 }));
@@ -1656,7 +1665,7 @@ $("card").onclick = () => { if (S.hide && !revealed) { revealed = true; paint();
 $("voiceSel").onchange = e => { S.voice = e.target.value; save(); pickVoices(); };
 document.addEventListener("visibilitychange", () => { if (document.hidden && playing) stop(); });
 
-buildOrder(); syncSegs(); renderTopics(); renderList(); show(); pickVoices();
+applyTheme(); buildOrder(); syncSegs(); renderTopics(); renderList(); show(); pickVoices();
 if (synth) { if ("onvoiceschanged" in synth) synth.onvoiceschanged = pickVoices; setTimeout(pickVoices, 600); }
 })();
 </script>
