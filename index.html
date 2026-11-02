@@ -23,19 +23,19 @@ img{max-width:100%}
 /* Одна колонка: зверху липкий плеєр із поточним словом, під ним теми, далі доріжка теми. */
 :root{
   --bg:#f2f5f0; --surface:#ffffff; --ink:#16211b; --muted:#5c6b62; --line:#d6ded6;
-  --accent:#0e6a49; --accent-ink:#ffffff; --live:#c0352d; --soft:#e2ebe4;
+  --accent:#0e6a49; --tr:#e0261b; --accent-ink:#ffffff; --live:#c0352d; --soft:#e2ebe4;
   --display:"Piazzolla","Georgia","Times New Roman",serif;
   --ui:"Onest","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#0e1411; --surface:#161f1a; --ink:#e8efe9; --muted:#93a39a; --line:#28342e;
-    --accent:#52c495; --accent-ink:#0a130f; --live:#ff7b6c; --soft:#1d2923; color-scheme:dark;
+    --accent:#52c495; --tr:#ff5446; --accent-ink:#0a130f; --live:#ff7b6c; --soft:#1d2923; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0e1411; --surface:#161f1a; --ink:#e8efe9; --muted:#93a39a; --line:#28342e;
-  --accent:#52c495; --accent-ink:#0a130f; --live:#ff7b6c; --soft:#1d2923; color-scheme:dark;
+  --accent:#52c495; --tr:#ff5446; --accent-ink:#0a130f; --live:#ff7b6c; --soft:#1d2923; color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.45}
@@ -55,9 +55,9 @@ header p{margin:6px 0 0;color:var(--muted);max-width:60ch}
 .meta span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
 .it{font-family:var(--display);font-weight:700;font-size:clamp(24px,6.4vw,38px);line-height:1.12;margin:6px 0 0;overflow-wrap:anywhere;text-wrap:balance}
 .it.long{font-size:clamp(19px,4.6vw,26px)}
-.lines{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;align-items:baseline;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.lines{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;align-items:baseline;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
 .lbl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.tr{margin:0;font-size:19px;font-weight:500;letter-spacing:.01em;color:var(--ink);overflow-wrap:anywhere}
+.tr{margin:0;font-size:19px;font-weight:600;letter-spacing:.01em;color:var(--tr);overflow-wrap:anywhere}
 .tr .st{color:var(--accent);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
 .uk{margin:0;font-size:20px;font-weight:600;line-height:1.3;color:var(--ink);overflow-wrap:anywhere}
 .kind{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:99px;background:var(--soft);color:var(--muted);margin-right:8px}
@@ -185,8 +185,8 @@ ol li[aria-current="true"] .n{color:var(--live);font-weight:700}
       <div class="meta"><span><b id="topicName"></b></span><span><span class="kind" id="kind"></span><span id="pos"></span></span></div>
       <p class="it" id="it" lang="it"></p>
       <div class="lines">
-        <span class="lbl" id="trLbl">вимова</span><p class="tr" id="tr"></p>
-        <span class="lbl">переклад</span><p class="uk" id="uk"></p>
+        <p class="tr" id="tr"></p>
+        <p class="uk" id="uk"></p>
       </div>
       <div class="phases" id="phases"></div>
     </div>
@@ -3579,7 +3579,7 @@ function show(){
     if (part.length === 2 && part[1] === "\u0301") { const b = document.createElement("span"); b.className = "st"; b.textContent = part[0]; trEl.appendChild(b); }
     else trEl.appendChild(document.createTextNode(part));
   });
-  trEl.hidden = !S.tr; $("trLbl").hidden = !S.tr;
+  trEl.hidden = !S.tr;
   $("kind").textContent = it.ex ? "приклад" : "слово"; $("kind").className = "kind" + (it.ex ? " ex" : "");
   $("uk").textContent = it.uk;
   $("fill").style.width = ((S.track + 1) / order.length * 100) + "%";
